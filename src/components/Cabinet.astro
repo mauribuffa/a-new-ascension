@@ -1,0 +1,207 @@
+---
+// Markup ported verbatim from the original static page.
+// All behaviour lives in src/scripts/jukebox.js (vanilla — no framework).
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const asset = (f) => `${base}/assets/${f}`;
+---
+<canvas id="warp" aria-hidden="true"></canvas>
+<div class="vignette" aria-hidden="true"></div>
+
+<!-- ============ INSERT COIN GATE ============ -->
+<div id="boot">
+  <div>
+    <div class="boot-logo">A NEW ASCENSION</div>
+    <div class="boot-sub">THE IMPLICATE ORDER</div>
+    <button id="coinBtn" type="button">▸ INSERT COIN</button>
+    <div class="coin-slot" aria-hidden="true">25¢</div>
+    <div class="boot-hint">CLICK TO POWER ON THE CABINET</div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <header class="bar">
+    <div class="brand">A NEW ASCENSION<small>ROCK FOR NERDS · JACKSONVILLE FL</small></div>
+    <nav class="bar-nav">
+      <a href="#jukebox">JUKEBOX</a>
+      <a href="#about">ABOUT</a>
+      <a href="#credits">CREDITS</a>
+      <a href="#listen">LISTEN</a>
+    </nav>
+  </header>
+
+  <!-- ============ THE MACHINE ============ -->
+  <div class="stage" id="jukebox">
+    <div>
+      <div class="cabinet">
+        <img class="cab-layer cab-bg" src={asset("cabinet.webp")} alt="The Implicate Order album cover — an arcade cabinet" width="942" height="942">
+        <div class="marquee" aria-hidden="true"></div>
+        <div class="ticker" id="ticker" role="status" aria-live="polite"></div>
+
+        <div class="crt">
+          <canvas id="viz" aria-hidden="true"></canvas>
+          <div class="crt-ui">
+            <div class="crt-top">
+              <span id="crtStatus">◈ STANDBY</span>
+              <span class="crt-credit" id="crtCredit">CREDIT 00</span>
+            </div>
+            <div class="crt-mid">
+              <div id="crtIdle" class="crt-idle">SELECT A TRACK</div>
+              <div id="crtNow" style="display:none">
+                <div class="crt-num" id="crtNum">01</div>
+                <div class="crt-title" id="crtTitle">—</div>
+              </div>
+            </div>
+            <div class="crt-bot">
+              <div class="crt-bar" id="crtBar"><div class="crt-bar-fill" id="crtFill"></div></div>
+              <div class="crt-meta">
+                <span class="crt-badge">30s PREVIEW</span>
+                <span id="crtTime">0:00 / 0:30</span>
+              </div>
+            </div>
+          </div>
+          <div class="scanlines" aria-hidden="true"></div>
+          <div class="glare" aria-hidden="true"></div>
+          <div class="power-flash" aria-hidden="true"></div>
+        </div>
+
+        <img class="hand hand-l" id="handL" src={asset("hand-left.webp")} alt="" aria-hidden="true">
+        <img class="hand hand-r" id="handR" src={asset("hand-right.webp")} alt="" aria-hidden="true">
+        <img class="cab-layer cab-panel" src={asset("panel.webp")} alt="" width="942" height="942">
+        <div class="btn-glow bg-a" id="glowA" aria-hidden="true"></div>
+        <div class="btn-glow bg-b" id="glowB" aria-hidden="true"></div>
+        <div class="coin-glow" id="glowCoin" aria-hidden="true"></div>
+      </div>
+
+      <!-- control deck -->
+      <div class="deck">
+        <div class="deck-row">
+          <button class="btn" id="bPrev" type="button" title="Previous (←)" aria-label="Previous track">◀◀</button>
+          <button class="btn play" id="bPlay" type="button" title="Play / Pause (Space)" aria-label="Play or pause">▶</button>
+          <button class="btn" id="bNext" type="button" title="Next (→)" aria-label="Next track">▶▶</button>
+          <button class="btn" id="bShuf" type="button" title="Shuffle" aria-label="Toggle shuffle" aria-pressed="false">SHUF</button>
+          <div class="vol">
+            <span>VOL</span>
+            <input type="range" id="vol" min="0" max="100" value="75" aria-label="Volume">
+          </div>
+        </div>
+        <div class="deck-hint">SPACE ▸ PLAY/PAUSE &nbsp;·&nbsp; ← → ▸ PREV/NEXT &nbsp;·&nbsp; 1–9 0 - ▸ JUMP TO TRACK</div>
+      </div>
+      <p class="sr-only" id="live" role="status" aria-live="polite"></p>
+    </div>
+
+    <!-- track select / queue / high scores -->
+    <div>
+      <div class="panel">
+        <div class="panel-head">
+          <h2>▸ SELECT TRACK</h2>
+          <span id="trkCount">11 TRACKS</span>
+        </div>
+        <ul class="tracks" id="trackList"></ul>
+      </div>
+
+      <div class="panel qpanel">
+        <div class="panel-head">
+          <h2>▸ UP NEXT</h2>
+          <button class="qclear" id="qClear" type="button">CLEAR ✕</button>
+        </div>
+        <ul class="qlist" id="queueList"></ul>
+        <div class="qempty" id="qEmpty">QUEUE EMPTY · HIT <b>+</b> ON ANY TRACK</div>
+      </div>
+
+      <div class="panel hs">
+        <div class="panel-head">
+          <h2>▸ HIGH SCORES</h2>
+          <span id="hsTotal">0 PLAYS</span>
+        </div>
+        <div id="hsList"></div>
+      </div>
+
+      <!-- Everything below is live over Convex. If no backend is configured
+           the whole panel is removed at runtime by src/scripts/live.js. -->
+      <div class="panel floor" id="floor" hidden>
+        <div class="panel-head">
+          <h2>▸ ARCADE FLOOR</h2>
+          <span class="livedot">● LIVE</span>
+        </div>
+        <div class="floor-stats">
+          <div class="fstat"><b id="floorOnline">0</b><em>PLAYERS ONLINE</em></div>
+          <div class="fstat"><b id="floorTotal">0</b><em>TOTAL VISITORS</em></div>
+        </div>
+        <div class="flags" id="floorFlags"></div>
+        <div class="hs-sub">WORLDWIDE NOW PLAYING</div>
+        <div id="floorWorld"></div>
+        <div class="hs-sub">WORLDWIDE SCORES</div>
+        <div id="hsGlobal"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ ABOUT ============ -->
+  <section class="blk" id="about">
+    <h2>About</h2><div class="rule"></div>
+    <p class="lede">
+      <strong>A New Ascension</strong> is an alt-rock project out of Jacksonville, Florida that
+      launched in <strong>2005</strong>. After two decades of a deliberately limited discography,
+      it released its first full-length album, <strong>The Implicate Order</strong>, in
+      <strong>2026</strong> — eleven tracks produced by My Platinum Sound at EWM Studios.
+    </p>
+    <p class="lede" style="margin-top:16px">
+      Tagline, and mission statement: <strong>Rock for Nerds.</strong>
+    </p>
+  </section>
+
+  <!-- ============ CREDITS ============ -->
+  <section class="blk" id="credits">
+    <h2>The Implicate Order</h2><div class="rule"></div>
+    <div class="grid3">
+      <div class="card">
+        <h3>▸ CORE</h3>
+        <ul>
+          <li><b>Jared Boice</b><em>guitars &amp; vocals</em></li>
+          <li><b>Kyle Brewer</b><em>drums</em></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>▸ BASS</h3>
+        <ul>
+          <li><b>Paul Lapinski</b><em>Pigeonhole · Inferno</em></li>
+          <li><b>Pete Mosely</b><em>Inspection 12 · Yellowcard</em></li>
+          <li><b>Will Frazier</b><em>Flag on Fire · Whole Wheat Bread</em></li>
+          <li><b>Mark McHone</b><em>Heart Shaped Box · The Summer Obsession</em></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>▸ PRODUCTION</h3>
+        <ul>
+          <li><b>My Platinum Sound</b><em>produced by Paul Lapinski</em></li>
+          <li><b>EWM Studios</b><em>Jacksonville, Florida</em></li>
+          <li><b>Andrew Carey</b><em>screaming vocals on two tracks — Evergreen Terrace · Gray Skies</em></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ LISTEN ============ -->
+  <section class="blk" id="listen">
+    <h2>Listen &amp; Follow</h2><div class="rule"></div>
+    <p class="lede">The jukebox plays official 30-second previews. Full tracks live here:</p>
+    <div class="links">
+      <a class="lnk sp" href="https://open.spotify.com/album/5gPmB4J6tDYYeuKetPyr7s" target="_blank" rel="noopener"><i class="dot"></i>SPOTIFY</a>
+      <a class="lnk ap" href="https://music.apple.com/us/album/the-implicate-order/1895180528" target="_blank" rel="noopener"><i class="dot"></i>APPLE MUSIC</a>
+      <a class="lnk yt" href="https://www.youtube.com/anewascension" target="_blank" rel="noopener"><i class="dot"></i>YOUTUBE</a>
+      <a class="lnk ig" href="https://www.instagram.com/anewascensionrock/" target="_blank" rel="noopener"><i class="dot"></i>INSTAGRAM</a>
+      <a class="lnk" href="https://www.tiktok.com/@anewascension" target="_blank" rel="noopener"><i class="dot"></i>TIKTOK</a>
+      <a class="lnk" href="https://x.com/jaredboice" target="_blank" rel="noopener"><i class="dot"></i>X</a>
+      <a class="lnk" href="https://www.anewascension.com/" target="_blank" rel="noopener"><i class="dot"></i>OFFICIAL SITE</a>
+      <a class="lnk" href="mailto:anewascension@gmail.com"><i class="dot"></i>CONTACT</a>
+    </div>
+  </section>
+
+  <footer>
+    <span>A NEW ASCENSION · THE IMPLICATE ORDER · 2026</span>
+    <span>PREVIEW AUDIO © THE ARTIST, VIA SPOTIFY</span>
+  </footer>
+</div>
+
+<audio id="au" crossorigin="anonymous" preload="none"></audio>

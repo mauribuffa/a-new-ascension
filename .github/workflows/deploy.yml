@@ -1,0 +1,60 @@
+name: Deploy to GitHub Pages
+
+# GitHub Pages cannot build an Astro project on its own — it only serves files.
+# This builds the site and publishes dist/.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # lets you re-deploy by hand from the Actions tab
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run build
+        env:
+          # Set these under Settings → Secrets and variables → Actions → Variables.
+          #
+          # CONVEX_URL: your PRODUCTION Convex URL (https://<name>.convex.cloud),
+          # obtained by running `npx convex deploy` locally. Leave it unset until
+          # then — the page detects the missing backend and simply hides the live
+          # "Arcade Floor" panel. Never put the local 127.0.0.1 URL here: visitors
+          # would be pointed at their own machine.
+          CONVEX_URL: ${{ vars.CONVEX_URL }}
+          # Override these only when moving to a custom domain,
+          # e.g. SITE_URL=https://anewascension.com and BASE_PATH=/
+          SITE_URL: ${{ vars.SITE_URL || 'https://mauribuffa.github.io' }}
+          BASE_PATH: ${{ vars.BASE_PATH || '/a-new-ascension' }}
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

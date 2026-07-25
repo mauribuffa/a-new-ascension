@@ -1,0 +1,79 @@
+---
+import '../styles/jukebox.css';
+import Cabinet from '../components/Cabinet.astro';
+
+// Build-time env var, handed to the vanilla engine via a data attribute.
+// Empty string = no backend configured; the page degrades to local-only.
+// The Convex CLI owns CONVEX_URL in .env.local. Read that at build time rather
+// than keeping a duplicate PUBLIC_CONVEX_URL — two vars both matching
+// "CONVEX_URL" is what stops the CLI from updating the file automatically.
+const CONVEX_URL =
+  process.env.CONVEX_URL ??
+  import.meta.env.PUBLIC_CONVEX_URL ??
+  '';
+
+// Every asset and social URL is derived from the configured site + base, so
+// they stay correct on a GitHub project page and on a custom domain alike.
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const asset = (f) => `${base}/assets/${f}`;
+const pageUrl = new URL(`${base}/`, Astro.site).href;
+const ogImage = new URL(`${base}/assets/og.jpg`, Astro.site).href;
+---
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A NEW ASCENSION — The Implicate Order — Arcade Jukebox</title>
+<meta name="description" content="Rock for Nerds. Play all 11 tracks from The Implicate Order on the A New Ascension arcade jukebox.">
+<meta name="theme-color" content="#04060e">
+<meta name="author" content="A New Ascension">
+<link rel="canonical" href={pageUrl}>
+<meta property="og:url" content={pageUrl}>
+<meta property="og:type" content="music.album">
+<meta property="og:site_name" content="A New Ascension">
+<meta property="og:title" content="A NEW ASCENSION — The Implicate Order">
+<meta property="og:description" content="Rock for Nerds. Insert a coin and play all 11 tracks on the arcade jukebox.">
+<meta property="og:image" content={ogImage}>
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:alt" content="The Implicate Order album cover — an arcade cabinet played by skeleton hands">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="A NEW ASCENSION — The Implicate Order">
+<meta name="twitter:description" content="Rock for Nerds. Insert a coin and play all 11 tracks on the arcade jukebox.">
+<meta name="twitter:image" content={ogImage}>
+<link rel="icon" type="image/png" sizes="32x32" href={asset("favicon-32.png")}>
+<link rel="apple-touch-icon" href={asset("apple-touch-icon.png")}>
+<link rel="preload" as="image" href={asset("cabinet.webp")}>
+<script type="application/ld+json" set:html={`{"@context":"https://schema.org","@type":"MusicAlbum",
+ "name":"The Implicate Order","numTracks":11,"datePublished":"2026-05-06","genre":"Alternative Rock",
+ "byArtist":{"@type":"MusicGroup","name":"A New Ascension","genre":"Alternative Rock",
+   "foundingDate":"2005","foundingLocation":{"@type":"Place","name":"Jacksonville, Florida"},
+   "email":"anewascension@gmail.com",
+   "member":[{"@type":"Person","name":"Jared Boice"},{"@type":"Person","name":"Kyle Brewer"}],
+   "sameAs":["https://www.anewascension.com/","https://open.spotify.com/album/5gPmB4J6tDYYeuKetPyr7s",
+     "https://music.apple.com/us/album/the-implicate-order/1895180528",
+     "https://www.youtube.com/anewascension","https://www.instagram.com/anewascensionrock/",
+     "https://www.tiktok.com/@anewascension"]},
+ "track":[
+  {"@type":"MusicRecording","name":"Astral Body","position":1},
+  {"@type":"MusicRecording","name":"All About the Hits","position":2},
+  {"@type":"MusicRecording","name":"Bridge Diving","position":3},
+  {"@type":"MusicRecording","name":"On a Big Illusion","position":4},
+  {"@type":"MusicRecording","name":"My Own Goliath","position":5},
+  {"@type":"MusicRecording","name":"Cinema Geek","position":6},
+  {"@type":"MusicRecording","name":"Resurrected","position":7},
+  {"@type":"MusicRecording","name":"Air Traffic Controller","position":8},
+  {"@type":"MusicRecording","name":"Chronograph","position":9},
+  {"@type":"MusicRecording","name":"Where the Heart is","position":10},
+  {"@type":"MusicRecording","name":"Beyond the Edge of Time","position":11}]}`} />
+</head>
+<body data-convex={CONVEX_URL}>
+<Cabinet />
+<script>
+  import '../scripts/jukebox.js';
+  import '../scripts/live.js';
+</script>
+</body>
+</html>

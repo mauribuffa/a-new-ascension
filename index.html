@@ -4,7 +4,56 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>A NEW ASCENSION — The Implicate Order — Arcade Jukebox</title>
-<meta name="description" content="Rock for Nerds. Play The Implicate Order on the A New Ascension arcade jukebox.">
+<meta name="description" content="Rock for Nerds. Play all 11 tracks from The Implicate Order on the A New Ascension arcade jukebox.">
+<meta name="theme-color" content="#04060e">
+<meta name="author" content="A New Ascension">
+
+<!-- ⚠️ DEPLOY: replace this with the real URL once hosted — og:image/og:url must be
+     absolute or link previews will not render on Instagram, Discord, iMessage, etc. -->
+<link rel="canonical" href="https://www.anewascension.com/jukebox/">
+<meta property="og:url" content="https://www.anewascension.com/jukebox/">
+<meta property="og:type" content="music.album">
+<meta property="og:site_name" content="A New Ascension">
+<meta property="og:title" content="A NEW ASCENSION — The Implicate Order">
+<meta property="og:description" content="Rock for Nerds. Insert a coin and play all 11 tracks on the arcade jukebox.">
+<meta property="og:image" content="https://www.anewascension.com/jukebox/assets/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:alt" content="The Implicate Order album cover — an arcade cabinet played by skeleton hands">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="A NEW ASCENSION — The Implicate Order">
+<meta name="twitter:description" content="Rock for Nerds. Insert a coin and play all 11 tracks on the arcade jukebox.">
+<meta name="twitter:image" content="https://www.anewascension.com/jukebox/assets/og.jpg">
+
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="preload" as="image" href="assets/cabinet.webp">
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"MusicAlbum",
+ "name":"The Implicate Order","numTracks":11,"datePublished":"2026-05-06","genre":"Alternative Rock",
+ "byArtist":{"@type":"MusicGroup","name":"A New Ascension","genre":"Alternative Rock",
+   "foundingDate":"2005","foundingLocation":{"@type":"Place","name":"Jacksonville, Florida"},
+   "email":"anewascension@gmail.com",
+   "member":[{"@type":"Person","name":"Jared Boice"},{"@type":"Person","name":"Kyle Brewer"}],
+   "sameAs":["https://www.anewascension.com/","https://open.spotify.com/album/5gPmB4J6tDYYeuKetPyr7s",
+     "https://music.apple.com/us/album/the-implicate-order/1895180528",
+     "https://www.youtube.com/anewascension","https://www.instagram.com/anewascensionrock/",
+     "https://www.tiktok.com/@anewascension"]},
+ "track":[
+  {"@type":"MusicRecording","name":"Astral Body","position":1},
+  {"@type":"MusicRecording","name":"All About the Hits","position":2},
+  {"@type":"MusicRecording","name":"Bridge Diving","position":3},
+  {"@type":"MusicRecording","name":"On a Big Illusion","position":4},
+  {"@type":"MusicRecording","name":"My Own Goliath","position":5},
+  {"@type":"MusicRecording","name":"Cinema Geek","position":6},
+  {"@type":"MusicRecording","name":"Resurrected","position":7},
+  {"@type":"MusicRecording","name":"Air Traffic Controller","position":8},
+  {"@type":"MusicRecording","name":"Chronograph","position":9},
+  {"@type":"MusicRecording","name":"Where the Heart is","position":10},
+  {"@type":"MusicRecording","name":"Beyond the Edge of Time","position":11}]}
+</script>
 <style>
 /* ============================================================
    A NEW ASCENSION — arcade jukebox
@@ -40,6 +89,8 @@ h1,h2,h3{margin:0;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
 a{color:var(--cyan);text-decoration:none}
 a:hover{color:var(--cyan-hot)}
 ::selection{background:var(--pink);color:#fff}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+  clip:rect(0 0 0 0);white-space:nowrap;border:0}
 
 /* ---------- warp background ---------- */
 #warp{position:fixed;inset:0;width:100%;height:100%;z-index:0;opacity:.55}
@@ -64,7 +115,7 @@ a:hover{color:var(--cyan-hot)}
 #coinBtn:hover{transform:translateY(-2px) scale(1.03)}
 #coinBtn:active{transform:translateY(1px) scale(.98)}
 @keyframes coinPulse{0%,60%{opacity:1}61%,100%{opacity:.62}}
-.boot-hint{margin-top:26px;font-size:11px;letter-spacing:.24em;color:#5d7fa3}
+.boot-hint{margin-top:26px;font-size:11px;letter-spacing:.24em;color:#8aa8c4}
 .coin-slot{margin-top:16px;font-size:22px;color:var(--amber);letter-spacing:.5em}
 
 /* ---------- layout ---------- */
@@ -125,7 +176,7 @@ body.on .marquee{opacity:1;animation:marqueeFlicker 5.5s infinite}
 /* bottom ~33% of the screen is occluded by the skeleton hands in the artwork,
    so all live UI is kept inside the visible upper region */
 .crt-ui{position:absolute;inset:0;display:flex;flex-direction:column;
-  justify-content:space-between;padding:4.5cqh 5cqw 30cqh;pointer-events:none;
+  justify-content:flex-start;padding:4.5cqh 5cqw 30cqh;pointer-events:none;
   opacity:0;transition:opacity .5s ease .35s}
 body.on .crt-ui{opacity:1}
 
@@ -134,7 +185,7 @@ body.on .crt-ui{opacity:1}
   text-shadow:0 0 6px rgba(47,208,240,.9)}
 .crt-credit{color:var(--amber);text-shadow:0 0 6px rgba(247,184,67,.9)}
 
-.crt-mid{text-align:center;position:relative}
+.crt-mid{text-align:center;position:relative;margin-top:2.5cqh}
 /* dark scrim so the title stays legible when tall bars rise behind it */
 .crt-mid::before{content:"";position:absolute;inset:-3cqh -6cqw;z-index:-1;
   background:radial-gradient(ellipse at 50% 50%,rgba(2,8,16,.88) 0%,rgba(2,8,16,.55) 55%,transparent 82%)}
@@ -143,11 +194,13 @@ body.on .crt-ui{opacity:1}
 .crt-title{font-size:9.4cqh;font-weight:700;letter-spacing:.06em;color:#fff;line-height:1.15;
   text-transform:uppercase;text-shadow:0 0 10px rgba(159,246,255,.85),0 0 26px rgba(47,208,240,.55);
   margin-top:1.5cqh;word-break:break-word}
+.crt-title.long{font-size:7.4cqh}
+.crt-title.xlong{font-size:6.2cqh}
 .crt-idle{font-size:6.4cqh;letter-spacing:.24em;color:var(--cream);
   text-shadow:0 0 10px rgba(255,233,176,.8);animation:blink 1.05s steps(2,end) infinite}
 @keyframes blink{0%,55%{opacity:1}56%,100%{opacity:.12}}
 
-.crt-bot{display:flex;flex-direction:column;gap:2cqh}
+.crt-bot{display:flex;flex-direction:column;gap:2cqh;margin-top:auto}
 .crt-bar{position:relative;height:3.2cqh;background:rgba(2,20,34,.75);
   border:1px solid rgba(47,208,240,.5);pointer-events:auto;cursor:pointer;overflow:hidden}
 .crt-bar-fill{position:absolute;left:0;top:0;bottom:0;width:0%;
@@ -194,14 +247,14 @@ body.on .power-flash{animation:powerOn .55s ease-out forwards}
   box-shadow:0 0 18px rgba(255,45,85,.5),inset 0 1px 0 rgba(255,255,255,.3)}
 .btn.play:hover{box-shadow:0 0 26px rgba(255,45,85,.75),inset 0 1px 0 rgba(255,255,255,.35)}
 .btn.on{color:var(--amber);border-color:var(--amber);box-shadow:0 0 14px rgba(247,184,67,.5)}
-.vol{display:flex;align-items:center;gap:9px;font-size:10px;letter-spacing:.18em;color:#6f90b0}
+.vol{display:flex;align-items:center;gap:9px;font-size:10px;letter-spacing:.18em;color:#8aa8c4}
 input[type=range]{-webkit-appearance:none;appearance:none;width:106px;height:5px;border-radius:2px;
   background:linear-gradient(90deg,var(--cyan) var(--p,70%),#1b2c44 var(--p,70%));outline:none;cursor:pointer}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;
   background:var(--cyan-hot);box-shadow:0 0 9px var(--cyan);cursor:pointer}
 input[type=range]::-moz-range-thumb{width:14px;height:14px;border:0;border-radius:50%;
   background:var(--cyan-hot);box-shadow:0 0 9px var(--cyan);cursor:pointer}
-.deck-hint{text-align:center;font-size:9.5px;letter-spacing:.2em;color:#4d6c8a;margin-top:12px}
+.deck-hint{text-align:center;font-size:9.5px;letter-spacing:.2em;color:#7d9cbb;margin-top:12px}
 
 /* ---------- track select ---------- */
 .panel{background:linear-gradient(180deg,rgba(13,21,38,.92),rgba(8,13,26,.92));
@@ -212,25 +265,59 @@ input[type=range]::-moz-range-thumb{width:14px;height:14px;border:0;border-radiu
   border-bottom:var(--edge)}
 .panel-head h2{font-size:12px;color:#fff;letter-spacing:.24em}
 .panel-head span{font-size:9.5px;letter-spacing:.2em;color:var(--amber)}
-.tracks{list-style:none;margin:0;padding:0;max-height:none}
-.trk{display:grid;grid-template-columns:34px 1fr auto auto;align-items:center;gap:11px;
+.tracks{list-style:none;margin:0;padding:0}
+.trk{display:grid;grid-template-columns:34px 1fr auto auto auto;align-items:center;gap:10px;
   padding:11px 14px;border-bottom:1px solid rgba(63,127,176,.13);cursor:pointer;
   transition:background .13s,box-shadow .13s;position:relative}
 .trk:last-child{border-bottom:0}
 .trk:hover{background:rgba(47,208,240,.09)}
-.trk .n{font-size:11px;color:#587898;letter-spacing:.08em}
+.trk:focus-visible{outline:none;background:rgba(47,208,240,.09);box-shadow:inset 0 0 0 1px var(--cyan)}
+.trk .n{font-size:11px;color:#7d9cbb;letter-spacing:.08em}
 .trk .t{font-size:13px;color:#dceaf7;letter-spacing:.04em;text-transform:uppercase;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.trk .d{font-size:11px;color:#587898}
-.trk .sp{font-size:10px;color:#3f6182;letter-spacing:.1em;padding:2px 5px;border-radius:3px}
+.trk .d{font-size:11px;color:#8fb0cc}
+.trk .q,.trk .sp{font-size:10px;letter-spacing:.1em;padding:3px 6px;border-radius:3px;
+  border:1px solid transparent;transition:all .12s;font-family:var(--mono)}
+.trk .q{color:#8aa8c4;background:rgba(63,127,176,.16);cursor:pointer}
+.trk .q:hover{color:var(--amber);border-color:var(--amber);background:rgba(247,184,67,.14)}
+.trk .sp{color:#6d8dab}
 .trk .sp:hover{color:#1DB954;background:rgba(29,185,84,.12)}
 .trk.active{background:linear-gradient(90deg,rgba(255,45,85,.22),rgba(255,45,85,.04));
   box-shadow:inset 3px 0 0 var(--pink)}
 .trk.active .t{color:#fff;text-shadow:0 0 10px rgba(255,45,85,.7)}
 .trk.active .n{color:var(--pink-hot)}
 .trk.playing .n::after{content:"▶";margin-left:2px}
+.trk.queued{box-shadow:inset 3px 0 0 var(--amber)}
 .trk.dead{opacity:.45}
 .trk.dead .t{text-decoration:line-through}
+
+/* ---------- up next queue ---------- */
+.qpanel,.hs{margin-top:16px}
+.qlist{list-style:none;margin:0;padding:0}
+.qrow{display:grid;grid-template-columns:22px 1fr auto;align-items:center;gap:10px;
+  padding:9px 14px;border-bottom:1px solid rgba(63,127,176,.13);font-size:12px}
+.qrow:last-child{border-bottom:0}
+.qrow .qn{color:var(--amber);font-size:10px}
+.qrow .qt{color:#cfe3f5;text-transform:uppercase;letter-spacing:.04em;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.qx{color:#8aa8c4;cursor:pointer;padding:2px 7px;border-radius:3px;font-size:12px;
+  background:none;border:0;font-family:var(--mono)}
+.qx:hover{color:#fff;background:rgba(255,45,85,.34)}
+.qclear{font-size:9.5px;letter-spacing:.18em;color:#8aa8c4;cursor:pointer;
+  background:none;border:0;font-family:var(--mono);padding:2px 4px}
+.qclear:hover{color:var(--pink-hot)}
+.qempty{padding:15px;font-size:10.5px;letter-spacing:.14em;color:#7d9cbb;text-align:center}
+
+/* ---------- high scores ---------- */
+.hsrow{display:grid;grid-template-columns:28px 1fr auto;align-items:center;gap:10px;
+  padding:8px 14px;border-bottom:1px solid rgba(63,127,176,.13);font-size:12px}
+.hsrow:last-child{border-bottom:0}
+.hsrow .rank{color:var(--amber);font-size:10.5px;letter-spacing:.06em}
+.hsrow:first-child .rank{color:#fff;text-shadow:0 0 9px var(--amber)}
+.hsrow .hst{color:#bcd6ec;text-transform:uppercase;letter-spacing:.04em;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hsrow .hsc{color:var(--cyan);font-size:11px;letter-spacing:.06em}
+
 .eq{display:inline-flex;gap:2px;align-items:flex-end;height:11px;width:13px}
 .eq i{width:3px;background:var(--pink-hot);border-radius:1px;animation:eqb .72s ease-in-out infinite}
 .eq i:nth-child(2){animation-delay:.22s}.eq i:nth-child(3){animation-delay:.44s}
@@ -249,7 +336,7 @@ section.blk h2{font-size:13px;color:#fff;letter-spacing:.28em;margin-bottom:8px}
 .card li{padding:4px 0;border-bottom:1px solid rgba(63,127,176,.1)}
 .card li:last-child{border-bottom:0}
 .card li b{color:#e4f0fa;font-weight:700}
-.card li em{color:#6d8dab;font-style:normal;font-size:11px;display:block}
+.card li em{color:#8aa8c4;font-style:normal;font-size:11px;display:block}
 
 .links{display:flex;flex-wrap:wrap;gap:11px;margin-top:6px}
 .lnk{display:inline-flex;align-items:center;gap:8px;padding:12px 18px;border-radius:4px;
@@ -264,10 +351,10 @@ section.blk h2{font-size:13px;color:#fff;letter-spacing:.28em;margin-bottom:8px}
 .lnk.ig .dot{background:#e1306c;box-shadow:0 0 8px #e1306c}
 
 footer{padding:34px 0 60px;border-top:var(--edge);font-size:10.5px;letter-spacing:.15em;
-  color:#4d6c8a;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+  color:#7d9cbb;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
 
 @media(max-width:640px){
-  .trk{grid-template-columns:28px 1fr auto;gap:9px}
+  .trk{grid-template-columns:28px 1fr auto auto;gap:8px}
   .trk .sp{display:none}
   body{font-size:14px}
 }
@@ -351,26 +438,46 @@ footer{padding:34px 0 60px;border-top:var(--edge);font-size:10.5px;letter-spacin
       <!-- control deck -->
       <div class="deck">
         <div class="deck-row">
-          <button class="btn" id="bPrev" title="Previous (←)">◀◀</button>
-          <button class="btn play" id="bPlay" title="Play / Pause (Space)">▶</button>
-          <button class="btn" id="bNext" title="Next (→)">▶▶</button>
-          <button class="btn" id="bShuf" title="Shuffle">SHUF</button>
+          <button class="btn" id="bPrev" type="button" title="Previous (←)" aria-label="Previous track">◀◀</button>
+          <button class="btn play" id="bPlay" type="button" title="Play / Pause (Space)" aria-label="Play or pause">▶</button>
+          <button class="btn" id="bNext" type="button" title="Next (→)" aria-label="Next track">▶▶</button>
+          <button class="btn" id="bShuf" type="button" title="Shuffle" aria-label="Toggle shuffle" aria-pressed="false">SHUF</button>
           <div class="vol">
             <span>VOL</span>
             <input type="range" id="vol" min="0" max="100" value="75" aria-label="Volume">
           </div>
         </div>
-        <div class="deck-hint">SPACE ▸ PLAY/PAUSE &nbsp;·&nbsp; ← → ▸ PREV/NEXT &nbsp;·&nbsp; 1–9 ▸ JUMP TO TRACK</div>
+        <div class="deck-hint">SPACE ▸ PLAY/PAUSE &nbsp;·&nbsp; ← → ▸ PREV/NEXT &nbsp;·&nbsp; 1–9 0 - ▸ JUMP TO TRACK</div>
       </div>
+      <p class="sr-only" id="live" role="status" aria-live="polite"></p>
     </div>
 
-    <!-- track select -->
-    <div class="panel">
-      <div class="panel-head">
-        <h2>▸ SELECT TRACK</h2>
-        <span id="trkCount">11 TRACKS</span>
+    <!-- track select / queue / high scores -->
+    <div>
+      <div class="panel">
+        <div class="panel-head">
+          <h2>▸ SELECT TRACK</h2>
+          <span id="trkCount">11 TRACKS</span>
+        </div>
+        <ul class="tracks" id="trackList"></ul>
       </div>
-      <ul class="tracks" id="trackList"></ul>
+
+      <div class="panel qpanel">
+        <div class="panel-head">
+          <h2>▸ UP NEXT</h2>
+          <button class="qclear" id="qClear" type="button">CLEAR ✕</button>
+        </div>
+        <ul class="qlist" id="queueList"></ul>
+        <div class="qempty" id="qEmpty">QUEUE EMPTY · HIT <b>+</b> ON ANY TRACK</div>
+      </div>
+
+      <div class="panel hs">
+        <div class="panel-head">
+          <h2>▸ HIGH SCORES</h2>
+          <span id="hsTotal">0 PLAYS</span>
+        </div>
+        <div id="hsList"></div>
+      </div>
     </div>
   </div>
 
@@ -464,7 +571,20 @@ var TRACKS=[
 
 var $=function(s){return document.querySelector(s)};
 var au=$("#au"), cur=-1, shuffle=false, credits=0, powered=false;
+var buffering=false, counted=false;
 var reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* shareable per-track links: /#bridge-diving */
+function setHash(i){
+  try{ history.replaceState(null,"","#"+TRACKS[i].slug); }
+  catch(e){ location.hash=TRACKS[i].slug; }
+}
+function hashTrack(){
+  var h=(location.hash||"").replace(/^#/,"").toLowerCase();
+  if(!h) return -1;
+  for(var i=0;i<TRACKS.length;i++) if(TRACKS[i].slug===h) return i;
+  return -1;
+}
 
 /* ============ THE MECHANISM ============
    The hands are physical objects: a spring drives the joystick the left hand
@@ -535,17 +655,28 @@ var coinSound=function(){ beep(988,.11,"square",.14,0); beep(1319,.20,"square",.
 var blip=function(){ beep(660,.05,"square",.05,0); };
 
 /* ============ TRACK LIST ============ */
+function slugify(s){ return s.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,""); }
+var liveEl=$("#live");
+function say(msg){ if(liveEl) liveEl.textContent=msg; }
+
 var listEl=$("#trackList");
 TRACKS.forEach(function(tr,i){
+  tr.slug=slugify(tr.t);
   var li=document.createElement("li");
   li.className="trk"; li.dataset.i=i; li.tabIndex=0;
+  li.setAttribute("role","button");
+  li.setAttribute("aria-label","Play "+tr.t);
   li.innerHTML='<span class="n">'+(tr.n<10?"0":"")+tr.n+'</span>'+
     '<span class="t"></span>'+
     '<span class="d">'+mmss(tr.d/1000)+'</span>'+
+    '<button class="q" type="button" title="Add to queue">+</button>'+
     '<a class="sp" href="https://open.spotify.com/track/'+tr.id+'" target="_blank" rel="noopener" title="Full track on Spotify">FULL ↗</a>';
   li.querySelector(".t").textContent=tr.t;
+  var qb=li.querySelector(".q");
+  qb.setAttribute("aria-label","Add "+tr.t+" to the queue");
+  qb.addEventListener("click",function(e){ e.stopPropagation(); enqueue(i); });
   li.addEventListener("click",function(e){
-    if(e.target.closest(".sp")) return;
+    if(e.target.closest(".sp")||e.target.closest(".q")) return;
     select(i,true);
   });
   li.addEventListener("keydown",function(e){
@@ -555,6 +686,108 @@ TRACKS.forEach(function(tr,i){
   listEl.appendChild(li);
 });
 var rows=[].slice.call(listEl.children);
+
+/* ============ QUEUE — a real rocola stacks up songs ============ */
+var queue=[], qListEl=$("#queueList"), qEmptyEl=$("#qEmpty"), qClearEl=$("#qClear");
+
+function paintQueue(){
+  qListEl.innerHTML="";
+  queue.forEach(function(ti,pos){
+    var li=document.createElement("li");
+    li.className="qrow";
+    li.innerHTML='<span class="qn">'+(pos+1)+'</span><span class="qt"></span>'+
+      '<button class="qx" type="button" aria-label="Remove from queue">✕</button>';
+    li.querySelector(".qt").textContent=TRACKS[ti].t;
+    li.querySelector(".qx").addEventListener("click",function(){
+      queue.splice(pos,1); paintQueue(); paintRows(); blip();
+    });
+    qListEl.appendChild(li);
+  });
+  qEmptyEl.style.display = queue.length ? "none" : "";
+  qClearEl.style.display = queue.length ? "" : "none";
+}
+function enqueue(i){
+  if(queue.length>=20) return;
+  queue.push(i);
+  paintQueue(); paintRows(); bumpIdle();
+  beep(1046,.05,"square",.07,0); beep(1568,.07,"square",.06,.05);
+  pressButton(i%2?"b":"a");
+  say(TRACKS[i].t+" added to the queue, position "+queue.length);
+}
+qClearEl.addEventListener("click",function(){ queue=[]; paintQueue(); paintRows(); blip(); });
+
+/* ============ HIGH SCORES — play counts persisted locally ============ */
+var HS_KEY="ana_plays_v1", plays={};
+try{ plays=JSON.parse(localStorage.getItem(HS_KEY))||{}; }catch(e){ plays={}; }
+
+function bumpPlay(i){
+  var k=TRACKS[i].slug;
+  plays[k]=(plays[k]||0)+1;
+  try{ localStorage.setItem(HS_KEY,JSON.stringify(plays)); }catch(e){}
+  paintScores();
+}
+function paintScores(){
+  var el=$("#hsList"), sfx=["ST","ND","RD","TH","TH"];
+  var ranked=TRACKS.map(function(t){ return {t:t.t,c:plays[t.slug]||0}; })
+    .filter(function(r){ return r.c>0; })
+    .sort(function(a,b){ return b.c-a.c; }).slice(0,5);
+  var total=0; for(var k in plays) if(plays.hasOwnProperty(k)) total+=plays[k];
+  $("#hsTotal").textContent = total+(total===1?" PLAY":" PLAYS");
+  if(!ranked.length){
+    el.innerHTML='<div class="qempty">NO PLAYS YET · THE MACHINE IS WAITING</div>';
+    return;
+  }
+  el.innerHTML="";
+  ranked.forEach(function(r,i){
+    var d=document.createElement("div"); d.className="hsrow";
+    d.innerHTML='<span class="rank">'+(i+1)+sfx[i]+'</span><span class="hst"></span>'+
+      '<span class="hsc">×'+r.c+'</span>';
+    d.querySelector(".hst").textContent=r.t;
+    el.appendChild(d);
+  });
+}
+
+/* ============ ATTRACT MODE — the cabinet demos itself when idle ============ */
+var idleAt=0, attractIx=0, ATTRACT=[
+  "SELECT A TRACK","▸ A NEW ASCENSION","THE IMPLICATE ORDER",
+  "ROCK FOR NERDS","11 TRACKS · JACKSONVILLE FL","▸ INSERT COIN"
+];
+function bumpIdle(){
+  idleAt=(window.performance?performance.now():Date.now());
+  if(attractIx!==0){ attractIx=0; if(crtIdle) crtIdle.textContent=ATTRACT[0]; }
+}
+setInterval(function(){
+  if(!powered || cur>=0 || !au.paused) return;
+  var now=(window.performance?performance.now():Date.now());
+  if(now-idleAt < 12000) return;
+  attractIx=(attractIx+1)%ATTRACT.length;
+  if(crtIdle) crtIdle.textContent=ATTRACT[attractIx];
+},2800);
+
+/* ============ FREE PLAY — for the nerds ============ */
+var freeplay=false;
+var KONAMI=["arrowup","arrowup","arrowdown","arrowdown","arrowleft","arrowright","arrowleft","arrowright","b","a"];
+var kIx=0;
+function konamiKey(k){
+  k=String(k).toLowerCase();
+  if(k===KONAMI[kIx]){
+    if(++kIx===KONAMI.length){ kIx=0; unlockFreePlay(); }
+  }else{
+    kIx = (k===KONAMI[0]) ? 1 : 0;
+  }
+}
+function unlockFreePlay(){
+  if(freeplay) return;
+  freeplay=true;
+  if(crtCredit) crtCredit.textContent="FREE PLAY";
+  say("Free play unlocked");
+  [523,659,784,1046,1319].forEach(function(f,i){ beep(f,.13,"square",.10,i*.085); });
+  throwStick(1);
+  setTimeout(function(){ throwStick(-1); },230);
+  setTimeout(function(){ pressButton("a"); },430);
+  setTimeout(function(){ pressButton("b"); },570);
+  flash(glowCoin,1000); flash(glowA,700); flash(glowB,900);
+}
 
 /* ============ CRT ============ */
 var crtStatus=$("#crtStatus"), crtCredit=$("#crtCredit"), crtIdle=$("#crtIdle"),
@@ -572,12 +805,16 @@ function paintCRT(){
   crtIdle.style.display="none"; crtNow.style.display="";
   crtNum.textContent="TRACK "+(tr.n<10?"0":"")+tr.n;
   crtTitle.textContent=tr.t;
-  crtStatus.textContent=au.paused?"◈ PAUSED":"◈ NOW PLAYING";
+  // long titles step down a size instead of wrapping into the spectrum band
+  crtTitle.className="crt-title"+(tr.t.length>19?" xlong":(tr.t.length>13?" long":""));
+  crtStatus.textContent = buffering ? "◈ LOADING…"
+    : (au.paused ? "◈ PAUSED" : "◈ NOW PLAYING");
 }
 function paintRows(){
   rows.forEach(function(r,i){
     r.classList.toggle("active",i===cur);
     r.classList.toggle("playing",i===cur&&!au.paused);
+    r.classList.toggle("queued",queue.indexOf(i)>=0);
   });
 }
 
@@ -588,7 +825,7 @@ function select(i,play){
     if(play) toggle();
     return;
   }
-  cur=i;
+  cur=i; counted=false; buffering=true;
   rows[i].classList.remove("dead");
   au.src=TRACKS[i].p;
   au.load();
@@ -596,7 +833,10 @@ function select(i,play){
     var pr=au.play();
     if(pr&&pr.catch) pr.catch(function(){});
   }
-  credits++; crtCredit.textContent="CREDIT "+(credits<10?"0":"")+credits;
+  setHash(i); bumpIdle();
+  say("Now playing, track "+TRACKS[i].n+", "+TRACKS[i].t);
+  credits++;
+  if(!freeplay) crtCredit.textContent="CREDIT "+(credits<10?"0":"")+credits;
   beep(880,.06,"square",.07,0); beep(1175,.08,"square",.07,.06);
   // the hand confirms the selection a beat after the stick moves
   var side = (i%2) ? "b" : "a";
@@ -624,7 +864,20 @@ function step(dir){
 
 au.addEventListener("play",function(){ $("#bPlay").textContent="❚❚"; paintCRT(); paintRows(); });
 au.addEventListener("pause",function(){ $("#bPlay").textContent="▶"; paintCRT(); paintRows(); });
-au.addEventListener("ended",function(){ step(1); });
+au.addEventListener("ended",function(){
+  if(queue.length){                       // the queue always wins
+    var n=queue.shift(); paintQueue(); paintRows(); select(n,true); return;
+  }
+  step(1);
+});
+// buffering feedback, so a slow network doesn't look like a dead click
+au.addEventListener("waiting",function(){ buffering=true; paintCRT(); });
+au.addEventListener("canplay",function(){ buffering=false; paintCRT(); });
+au.addEventListener("playing",function(){
+  buffering=false;
+  if(!counted && cur>=0){ counted=true; bumpPlay(cur); }
+  paintCRT();
+});
 au.addEventListener("timeupdate",function(){
   var dur=isFinite(au.duration)&&au.duration>0?au.duration:30;
   var pct=Math.min(100,(au.currentTime/dur)*100);
@@ -651,6 +904,8 @@ $("#bNext").addEventListener("click",function(){ step(1); });
 $("#bShuf").addEventListener("click",function(){
   shuffle=!shuffle;
   this.classList.toggle("on",shuffle);
+  this.setAttribute("aria-pressed",shuffle?"true":"false");
+  say(shuffle?"Shuffle on":"Shuffle off");
   blip();
 });
 var vol=$("#vol");
@@ -662,11 +917,16 @@ vol.addEventListener("input",applyVol); applyVol();
 
 document.addEventListener("keydown",function(e){
   if(/^(INPUT|TEXTAREA)$/.test(e.target.tagName)) return;
+  konamiKey(e.key);
+  bumpIdle();
   if(e.key===" "){ e.preventDefault(); toggle(); }
   else if(e.key==="ArrowRight") step(1);
   else if(e.key==="ArrowLeft") step(-1);
   else if(e.key>="1"&&e.key<="9") select(parseInt(e.key,10)-1,true);
+  else if(e.key==="0") select(9,true);            // track 10
+  else if(e.key==="-") select(10,true);           // track 11
 });
+document.addEventListener("pointerdown",bumpIdle,{passive:true});
 
 /* ============ INSERT COIN ============ */
 $("#coinBtn").addEventListener("click",function(){
@@ -678,15 +938,16 @@ $("#coinBtn").addEventListener("click",function(){
   document.body.classList.add("on");
   $("#boot").classList.add("gone");
   credits=0; crtCredit.textContent="CREDIT 01";   // first auto-select bumps this to 01
-  paintCRT();
-  setTimeout(function(){ select(0,true); },900);
+  bumpIdle(); paintCRT();
+  var start=hashTrack();                          // honour a shared /#track link
+  setTimeout(function(){ select(start>=0?start:0,true); },900);
 });
 
 /* ============ VISUALIZER ============ */
 var cv=$("#viz"), cx=cv.getContext("2d");
 var COLS=30, ROWS=14, cw=0, ch=0;
 // the bars live in their own band: below the title, above the progress readout
-var BAR_TOP=.18, BAR_FLOOR=.575;
+var BAR_TOP=.33, BAR_FLOOR=.575;
 function sizeViz(){
   var dpr=Math.min(window.devicePixelRatio||1,2);
   var r=cv.getBoundingClientRect();
@@ -699,7 +960,8 @@ window.addEventListener("resize",sizeViz);
 sizeViz();
 
 // cell colour ramp: cyan (low) → amber (mid) → hot pink (peak)
-function cellColor(rowFromBottom){
+function cellColor(rowFromBottom,col,t){
+  if(freeplay) return "hsl("+((col*11+t*95)%360)+",95%,60%)";
   var f=rowFromBottom/(ROWS-1);
   if(f<.45) return "rgba(47,208,240,.95)";
   if(f<.72) return "rgba(247,184,67,.95)";
@@ -740,7 +1002,7 @@ function frame(ts){
   // the marquee breathes with the track
   if(marquee) marquee.style.filter="brightness("+(1+beat*.35+sTap.x*.45).toFixed(3)+")";
 
-  if(!cw||!ch) return;
+  if(!cw||!ch||document.hidden) return;
 
   // --- screen background: deep CRT sky ---
   var g=cx.createLinearGradient(0,0,0,ch);
@@ -772,7 +1034,7 @@ function frame(ts){
     }
     var lit=Math.max(reduce?1:0,Math.round(lvl*ROWS));
     for(var r=0;r<lit;r++){
-      cx.fillStyle=cellColor(r);
+      cx.fillStyle=cellColor(r,c,t0);
       cx.fillRect(c*cellW+pad, floorY-(r+1)*cellH+pad, cellW-pad*2, cellH-pad*2);
     }
     // peak cap
@@ -808,6 +1070,7 @@ function mkStreak(spread){
 function warpFrame(){
   if(reduce) return;
   requestAnimationFrame(warpFrame);
+  if(document.hidden) return;
   wx.fillStyle="rgba(4,6,14,.30)"; wx.fillRect(0,0,ww,wh);
   var mx=ww/2, my=wh*.42, boost=(powered&&!au.paused)?1.9:1;
   for(var i=0;i<streaks.length;i++){
@@ -825,7 +1088,7 @@ window.addEventListener("resize",sizeWarp);
 sizeWarp();
 if(!reduce) requestAnimationFrame(warpFrame);
 
-paintCRT();
+paintCRT(); paintQueue(); paintScores(); bumpIdle();
 })();
 </script>
 </body>

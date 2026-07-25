@@ -1,0 +1,20 @@
+# Starts the whole stack in one command: `npm run dev`
+#
+# Two long-running watchers side by side in a TUI:
+#   web    — Astro dev server        http://localhost:4321
+#   convex — backend watcher + local deployment on :3210
+#
+# Keys: Ctrl+A then Q to quit everything, arrows to switch panes,
+#       X to stop the focused proc, R to restart it.
+#
+# Note: only ONE convex watcher can hold port 3210. If you already have
+# `npx convex dev` open in another terminal, stop it first or this pane
+# will fail to bind.
+procs:
+  web:
+    shell: "npm run dev:web"
+    autostart: true
+
+  convex:
+    shell: "npm run dev:convex"
+    autostart: true

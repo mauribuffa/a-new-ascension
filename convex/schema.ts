@@ -11,6 +11,7 @@ export default defineSchema({
     code: v.string(), // ISO-3166 alpha-2, e.g. "AR" (flag derived client-side)
     track: v.union(v.string(), v.null()), // what this visitor is hearing right now
     lastSeen: v.number(),
+    lastPlayAt: v.optional(v.number()), // rate-limits leaderboard writes per session
   })
     .index("by_session", ["sessionId"])
     .index("by_lastSeen", ["lastSeen"]),

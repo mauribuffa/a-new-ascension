@@ -30,6 +30,17 @@ jobs:
 
       - run: npm ci
 
+      # Fail loudly-ish instead of shipping a silently dead live panel.
+      - name: Check backend wiring
+        env:
+          CONVEX_URL: ${{ vars.CONVEX_URL }}
+        run: |
+          if [ -z "$CONVEX_URL" ]; then
+            echo "::warning title=No Convex URL::CONVEX_URL is empty — the live Arcade Floor panel will be hidden. It must be a REPOSITORY variable (Settings → Secrets and variables → Actions → Variables), not an Environment variable: this job declares no environment, so environment-scoped values never reach it."
+          else
+            echo "✓ CONVEX_URL = $CONVEX_URL"
+          fi
+
       - run: npm run build
         env:
           # Set these under Settings → Secrets and variables → Actions → Variables.
@@ -44,6 +55,15 @@ jobs:
           # e.g. SITE_URL=https://anewascension.com and BASE_PATH=/
           SITE_URL: ${{ vars.SITE_URL || 'https://mauribuffa.github.io' }}
           BASE_PATH: ${{ vars.BASE_PATH || '/a-new-ascension' }}
+
+      # Prove the URL actually made it into the shipped HTML, not just the env.
+      - name: Verify build output
+        run: |
+          if grep -q 'convex.cloud' dist/index.html; then
+            echo "✓ backend URL baked into dist/index.html"
+          else
+            echo "::warning title=Live features off::dist/index.html has no Convex URL — the site will deploy fine, but the Arcade Floor panel will remove itself at runtime."
+          fi
 
       - uses: actions/upload-pages-artifact@v3
         with:

@@ -106,9 +106,11 @@ function boot() {
   document.addEventListener("ana:track", (e) => {
     currentTrack = (e.detail && e.detail.title) || null;
     beat();
+    // The server resolves the title from the slug and enforces a per-session
+    // cooldown, so we only send the slug.
     if (e.detail && e.detail.slug) {
       client.mutation(api.live.bumpPlay, {
-        slug: e.detail.slug, title: e.detail.title,
+        sessionId, slug: e.detail.slug,
       }).catch(() => {});
     }
   });

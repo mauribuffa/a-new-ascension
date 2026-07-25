@@ -4,3 +4,9 @@ dist/
 .env
 .env.local
 .DS_Store
+
+# machine-local: .claude/skills are symlinks into .agents and break in a clone
+.convex/
+.claude/
+_*.html
+*.log

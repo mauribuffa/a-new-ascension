@@ -4,6 +4,39 @@ import { v } from "convex/values";
 /** A tab is considered online if it has checked in within this window. */
 export const STALE_MS = 45_000;
 
+/* ---------------------------------------------------------------------------
+   Abuse limits.
+
+   These mutations are public and unauthenticated — the Convex deployment URL
+   ships inside the page, so anyone can call them directly. Without limits the
+   counters and leaderboard can be inflated in a loop, on our quota. The rules:
+
+     · the leaderboard only accepts the 11 real album tracks (allowlist), and
+       the display title comes from here, never from the caller
+     · a play only counts if it comes from a session that is actually present,
+       and at most once per PLAY_COOLDOWN_MS for that session
+     · heartbeats that arrive faster than HEARTBEAT_MIN_MS are ignored
+     · the presence table is capped, so churning new sessions cannot grow it
+       (or the visitor counter) without bound
+--------------------------------------------------------------------------- */
+const HEARTBEAT_MIN_MS = 8_000;
+const PLAY_COOLDOWN_MS = 20_000;
+const MAX_PRESENCE = 500;
+
+const TRACK_TITLES: Record<string, string> = {
+  "astral-body": "Astral Body",
+  "all-about-the-hits": "All About the Hits",
+  "bridge-diving": "Bridge Diving",
+  "on-a-big-illusion": "On a Big Illusion",
+  "my-own-goliath": "My Own Goliath",
+  "cinema-geek": "Cinema Geek",
+  "resurrected": "Resurrected",
+  "air-traffic-controller": "Air Traffic Controller",
+  "chronograph": "Chronograph",
+  "where-the-heart-is": "Where the Heart is",
+  "beyond-the-edge-of-time": "Beyond the Edge of Time",
+};
+
 /**
  * Called on load and then on an interval by each open tab.
  * Returns true the first time a session is seen, so the client knows it was
@@ -24,13 +57,27 @@ export const heartbeat = mutation({
       .unique();
 
     if (existing) {
+      // Ignore floods; the client only needs to check in every 15s.
+      if (now - existing.lastSeen < HEARTBEAT_MIN_MS && existing.track === args.track) {
+        return { isNew: false, throttled: true };
+      }
       await ctx.db.patch(existing._id, {
         track: args.track,
         country: args.country,
         code: args.code,
         lastSeen: now,
       });
-      return { isNew: false };
+      return { isNew: false, throttled: false };
+    }
+
+    // Cap the floor so churning fresh sessionIds can't grow the table or the
+    // visitor counter without bound.
+    const live = await ctx.db
+      .query("presence")
+      .withIndex("by_lastSeen", (q) => q.gt("lastSeen", now - STALE_MS))
+      .take(MAX_PRESENCE + 1);
+    if (live.length > MAX_PRESENCE) {
+      return { isNew: false, throttled: true };
     }
 
     await ctx.db.insert("presence", { ...args, lastSeen: now });
@@ -66,10 +113,31 @@ export const leave = mutation({
   },
 });
 
-/** Global leaderboard increment. */
+/**
+ * Global leaderboard increment.
+ *
+ * The title is looked up here rather than accepted from the caller, so no
+ * arbitrary rows can be written. A play only counts when it comes from a
+ * session that is currently present, and at most once per cooldown.
+ */
 export const bumpPlay = mutation({
-  args: { slug: v.string(), title: v.string() },
+  args: { sessionId: v.string(), slug: v.string() },
   handler: async (ctx, args) => {
+    const title = TRACK_TITLES[args.slug];
+    if (!title) return { ok: false, reason: "unknown track" };
+
+    const session = await ctx.db
+      .query("presence")
+      .withIndex("by_session", (q) => q.eq("sessionId", args.sessionId))
+      .unique();
+    if (!session) return { ok: false, reason: "no live session" };
+
+    const now = Date.now();
+    if (session.lastPlayAt && now - session.lastPlayAt < PLAY_COOLDOWN_MS) {
+      return { ok: false, reason: "cooling down" };
+    }
+    await ctx.db.patch(session._id, { lastPlayAt: now });
+
     const row = await ctx.db
       .query("plays")
       .withIndex("by_slug", (q) => q.eq("slug", args.slug))
@@ -77,8 +145,9 @@ export const bumpPlay = mutation({
     if (row) {
       await ctx.db.patch(row._id, { count: row.count + 1 });
     } else {
-      await ctx.db.insert("plays", { ...args, count: 1 });
+      await ctx.db.insert("plays", { slug: args.slug, title, count: 1 });
     }
+    return { ok: true };
   },
 });
 
